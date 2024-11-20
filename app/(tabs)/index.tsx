@@ -1,4 +1,6 @@
-import { Image, StyleSheet, Platform } from 'react-native';
+import { Image, StyleSheet, Platform, TouchableOpacity } from 'react-native';
+import { GoogleSignin, isErrorWithCode, statusCodes } from '@react-native-google-signin/google-signin';
+import { useEffect, useState } from 'react';
 
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
@@ -6,6 +8,51 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 
 export default function HomeScreen() {
+  const [userInfo, setUserInfo] = useState(null);
+
+  useEffect(() => {
+    GoogleSignin.configure({
+      webClientId: '948259889257-c5v0q3jn6h7mbchaae2n9s24ftlfg3ft.apps.googleusercontent.com',
+      offlineAccess: false,
+    });
+  }, []);
+
+  const signIn = async () => {
+    try {
+      await GoogleSignin.hasPlayServices();
+      const userInfo = await GoogleSignin.signIn();
+      console.log(userInfo);
+    } catch (error) {
+      if (isErrorWithCode(error)) {
+        switch (error.code) {
+          case statusCodes.IN_PROGRESS:
+            console.log('Operation is in progress already');
+            // operation (eg. sign in) already in progress
+            break;
+          case statusCodes.PLAY_SERVICES_NOT_AVAILABLE:
+            console.log('Play services not available');
+            // Android only, play services not available or outdated
+            break;
+          default:
+            console.log('Some other error:', error.message);
+            // some other error happened
+        }
+      } else {
+        console.log('Else error:', error.message);
+        // an error that's not related to google sign in occurred
+      }
+    }
+  };
+
+  const signOut = async () => {
+    try {
+      await GoogleSignin.signOut();
+      setUserInfo(null);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
@@ -19,6 +66,23 @@ export default function HomeScreen() {
         <ThemedText type="title">Welcome!</ThemedText>
         <HelloWave />
       </ThemedView>
+
+      {/* Add Google Sign-In Button */}
+      <ThemedView style={styles.stepContainer}>
+        {!userInfo ? (
+          <TouchableOpacity onPress={signIn} style={styles.googleButton}>
+            <ThemedText>Sign in with Google</ThemedText>
+          </TouchableOpacity>
+        ) : (
+          <ThemedView>
+            <ThemedText>Welcome {userInfo.user.name}</ThemedText>
+            <TouchableOpacity onPress={signOut} style={styles.googleButton}>
+              <ThemedText>Sign Out</ThemedText>
+            </TouchableOpacity>
+          </ThemedView>
+        )}
+      </ThemedView>
+
       <ThemedView style={styles.stepContainer}>
         <ThemedText type="subtitle">Step 1: Try it</ThemedText>
         <ThemedText>
@@ -66,5 +130,12 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     position: 'absolute',
+  },
+  googleButton: {
+    backgroundColor: '#4285F4',
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginVertical: 10,
   },
 });
