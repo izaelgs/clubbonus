@@ -1,41 +1,35 @@
 import { Tabs } from "expo-router";
 import { FontAwesome } from "@expo/vector-icons";
+import { ProtectedLayout } from "../components/ProtectedLayout";
 
-export default function TabLayout() {
+export default function EstablishmentLayout() {
 	return (
-		<Tabs
-			screenOptions={{
-				tabBarActiveTintColor: "#007AFF",
-				tabBarInactiveTintColor: "gray",
-				headerShown: false,
-			}}>
-			<Tabs.Screen
-				name="index"
-				options={{
-					title: "Home",
-					tabBarIcon: ({ color }) => (
-						<FontAwesome name="home" size={24} color={color} />
-					),
-				}}
-			/>
-			<Tabs.Screen
-				name="orders"
-				options={{
-					title: "Orders",
-					tabBarIcon: ({ color }) => (
-						<FontAwesome name="list" size={24} color={color} />
-					),
-				}}
-			/>
-			<Tabs.Screen
-				name="profile"
-				options={{
-					title: "Profile",
-					tabBarIcon: ({ color }) => (
-						<FontAwesome name="user" size={24} color={color} />
-					),
-				}}
-			/>
-		</Tabs>
+		<ProtectedLayout>
+			<Tabs
+				screenOptions={{
+					headerShown: false,
+				}}>
+				<Tabs.Screen
+					name="index"
+					options={{
+						title: "Início",
+						tabBarActiveTintColor: "black",
+						tabBarIcon: ({ color }) => (
+							<FontAwesome name="home" size={24} color={color} />
+						),
+					}}
+				/>
+				<Tabs.Screen
+					name="config"
+					options={{
+						title: "Configurações",
+						tabBarActiveTintColor: "black",
+						tabBarIcon: ({ color }) => (
+							<FontAwesome name="cog" size={24} color={color} />
+						),
+					}}
+				/>
+			</Tabs>
+		</ProtectedLayout>
 	);
 }

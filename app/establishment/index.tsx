@@ -1,18 +1,15 @@
-import { Text, View, StyleSheet } from "react-native";
+import {
+  Text,
+  ScrollView,
+} from "tamagui";
 
-export default function User() {
-  return (
-    <View style={styles.container}>
-      <Text>User</Text>
-    </View>
-  );
+export default function Establishment() {
+	return (
+		<ScrollView
+			padding="$4"
+			bounces={false}
+      backgroundColor="white">
+			<Text>Establishment Dashboard</Text>
+		</ScrollView>
+	);
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "lightred",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
